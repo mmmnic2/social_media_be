@@ -8,7 +8,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserFollowerId implements Serializable {
-    private User followed;
-    private User follower;
+    private Long followed;
+    private Long follower;
 
 }

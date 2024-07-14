@@ -11,6 +11,8 @@ import com.firstversion.socialmedia.repository.UserRepository;
 import com.firstversion.socialmedia.security.jwt.JwtUtils;
 import com.firstversion.socialmedia.service.CommentLikeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,14 +26,16 @@ public class CommentLikeServiceImpl implements CommentLikeService {
     CommentRepository commentRepository;
     @Autowired
     UserRepository userRepository;
+
     @Override
     @Transactional
-    public CommentLikeResponse likeComment(String email, Long commentId) {
-        email = jwtUtils.extractUsername(email);
-        User foundUser = userRepository.findUserByEmail(email).orElseThrow(()-> new NotFoundException("User not found."));
-        Comment foundComment = commentRepository.findById(commentId).orElseThrow(()-> new NotFoundException("Comment not found."));
+    public CommentLikeResponse likeComment(Long commentId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User foundUser = (User) authentication.getPrincipal();
+//        User foundUser = userRepository.findUserByEmail(email).orElseThrow(()-> new NotFoundException("User not found."));
+        Comment foundComment = commentRepository.findById(commentId).orElseThrow(() -> new NotFoundException("Comment not found."));
         CommentLike existingCommentLike = commentLikeRepository.findByUserAndComment(foundUser.getId(), commentId);
-        if(existingCommentLike != null){
+        if (existingCommentLike != null) {
             commentLikeRepository.delete(existingCommentLike);
             return null;
         }

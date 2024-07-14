@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/comment")
 public class CommentController {
@@ -19,11 +21,10 @@ public class CommentController {
     CommentLikeService commentLikeService;
 
     @PostMapping("/create-comment/post/{postId}")
-    public ResponseEntity<?> createComment(@RequestHeader("Authorization") String jwt,
-                                           @PathVariable Long postId,
+    public ResponseEntity<?> createComment(@PathVariable Long postId,
                                            @RequestBody CommentRequest commentRequest) {
         try {
-            CommentResponse response = commentService.createComment(commentRequest, postId, jwt.substring(7));
+            CommentResponse response = commentService.createComment(commentRequest, postId);
             if (response != null) {
                 return ResponseEntity.ok(response);
             } else return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Unable to create a comment.");
@@ -33,10 +34,9 @@ public class CommentController {
     }
 
     @PutMapping("/like/{commentId}")
-    public ResponseEntity<?> likeComment(@RequestHeader("Authorization") String jwt,
-                                         @PathVariable Long commentId) {
+    public ResponseEntity<?> likeComment(@PathVariable Long commentId) {
         try {
-            CommentLikeResponse response = commentLikeService.likeComment(jwt.substring(7), commentId);
+            CommentLikeResponse response = commentLikeService.likeComment(commentId);
             if (response != null) {
                 return ResponseEntity.ok(response);
             } else return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Unable to like a comment.");
@@ -46,15 +46,26 @@ public class CommentController {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<?> updateComment(@RequestHeader("Authorization") String jwt,
-                                           @RequestBody CommentRequest commentRequest) {
+    public ResponseEntity<?> updateComment(@RequestBody CommentRequest commentRequest) {
         try {
-            CommentResponse response = commentService.updateComment(commentRequest, jwt.substring(7));
+            CommentResponse response = commentService.updateComment(commentRequest);
             if (response != null) {
                 return ResponseEntity.ok(response);
             } else return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Unable to update a comment.");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
+    }
+
+    @GetMapping("/get-by-post/{postId}")
+    public ResponseEntity<?> getCommentListByPostId(@PathVariable Long postId) {
+        List<CommentResponse> responses = commentService.findCommentByPostId(postId);
+        return ResponseEntity.ok(responses);
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<?> getAllComments() {
+        List<CommentResponse> responses = commentService.getAllComments();
+        return ResponseEntity.ok(responses);
     }
 }

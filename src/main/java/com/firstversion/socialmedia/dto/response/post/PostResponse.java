@@ -1,6 +1,7 @@
 package com.firstversion.socialmedia.dto.response.post;
 
 import com.firstversion.socialmedia.dto.BaseDTO;
+import com.firstversion.socialmedia.dto.response.comment.CommentResponse;
 import com.firstversion.socialmedia.dto.response.user.UserResponse;
 import jakarta.persistence.Column;
 import jakarta.persistence.GeneratedValue;
@@ -25,4 +26,11 @@ public class PostResponse extends BaseDTO {
 
     private UserResponse userResponse;
 
+    private List<UserResponse> listUserLiked;
+
+    private int totalLikes;
+
+    private int totalComments;
+
+    private boolean isCurrentUserLikePost;
 }

@@ -10,6 +10,6 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ChatMemberId implements Serializable {
-    private Chat chat;
-    private User member;
+    private Long chat;
+    private Long member;
 }

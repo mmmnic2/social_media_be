@@ -27,21 +27,23 @@ public class User extends BaseEntity implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column
+    @Column(nullable = false)
     private String firstName;
-    @Column
+    @Column(nullable = false)
     private String lastName;
-    @Column
+    @Column(nullable = false)
     private String password;
     @Email(message = "Email is not valid")
-    @Column
+    @Column(nullable = false)
     private String email;
-    @Column
+    @Column(nullable = false)
     private Gender gender;
     //List những bài post đã lưu
     @Column
     private List<Long> savedPost = new ArrayList<>();
     private Role role;
+    @Column
+    private String imageUrl;
 
     public String handleSaved_Unsaved(Long postId) {
         if (this.savedPost.contains(postId)) {
@@ -60,6 +62,8 @@ public class User extends BaseEntity implements UserDetails {
         userResponse.setEmail(this.getEmail());
         userResponse.setFirstName(this.getFirstName());
         userResponse.setLastName(this.getLastName());
+        userResponse.setCreateDate(this.getCreateDate());
+        userResponse.setModifiedDate(this.getModifiedDate());
         return userResponse;
     }
 

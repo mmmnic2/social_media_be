@@ -21,7 +21,7 @@ public class PostLike extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "post_id")
     private Post post;
-    private boolean isDelete = false;
+    private boolean isDelete;
 
     public PostLikeResponse toPostLikeResponse() {
         return new PostLikeResponse(this.getPost().toPostResponse(), this.getUserLike().toUserResponse(), isDelete);

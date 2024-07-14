@@ -12,9 +12,10 @@ import com.firstversion.socialmedia.repository.CommentRepository;
 import com.firstversion.socialmedia.repository.PostRepository;
 import com.firstversion.socialmedia.repository.UserRepository;
 import com.firstversion.socialmedia.security.jwt.JwtUtils;
-import com.firstversion.socialmedia.service.CommentLikeService;
 import com.firstversion.socialmedia.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -34,9 +35,10 @@ public class CommentServiceImpl implements CommentService {
     UserRepository userRepository;
 
     @Override
-    public CommentResponse createComment(CommentRequest commentRequest, Long postId, String email) {
-        email = jwtUtils.extractUsername(email);
-        User foundUser = userRepository.findUserByEmail(email).orElseThrow(() -> new NotFoundException("User not found."));
+    public CommentResponse createComment(CommentRequest commentRequest, Long postId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User foundUser = (User) authentication.getPrincipal();
+//        User foundUser = userRepository.findUserByEmail(email).orElseThrow(() -> new NotFoundException("User not found."));
         Post foundPost = postRepository.findById(postId).orElseThrow(() -> new NotFoundException("Post not found."));
         Comment comment = new Comment();
         comment.setContent(commentRequest.getContent());
@@ -56,9 +58,11 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public CommentResponse updateComment(CommentRequest commentRequest, String email) {
-        email = jwtUtils.extractUsername(email);
-        User foundUser = userRepository.findUserByEmail(email).orElseThrow(() -> new NotFoundException("User not found."));
+    public CommentResponse updateComment(CommentRequest commentRequest) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User foundUser = (User) authentication.getPrincipal();
+//        email = jwtUtils.extractUsername(email);
+//        User foundUser = userRepository.findUserByEmail(email).orElseThrow(() -> new NotFoundException("User not found."));
         Comment existingComment = commentRepository.findById(commentRequest.getId()).orElseThrow(() -> new NotFoundException("Comment not found."));
         existingComment.setContent(commentRequest.getContent() != null ? commentRequest.getContent() : existingComment.getContent());
         existingComment.setVideo(commentRequest.getVideo() != null ? commentRequest.getVideo() : existingComment.getVideo());
@@ -68,6 +72,13 @@ public class CommentServiceImpl implements CommentService {
         }
         Comment savedComment = commentRepository.save(existingComment);
         return savedComment.toCommentResponse();
+    }
+
+    @Override
+    public List<CommentResponse> findCommentByPostId(Long postId) {
+        Post foundPost = postRepository.findById(postId).orElseThrow(() -> new NotFoundException("Post not found."));
+        List<Comment> commentList = commentRepository.findByPostId(postId);
+        return commentList.stream().map(Comment::toCommentResponse).toList();
     }
 
 

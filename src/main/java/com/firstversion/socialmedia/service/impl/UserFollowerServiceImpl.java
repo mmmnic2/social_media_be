@@ -56,6 +56,7 @@ public class UserFollowerServiceImpl implements UserFollowerService {
             });
             return followerList;
         }
+
         return List.of();
     }
 

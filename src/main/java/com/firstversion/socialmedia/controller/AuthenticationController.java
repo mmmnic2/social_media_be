@@ -3,7 +3,6 @@ package com.firstversion.socialmedia.controller;
 import com.firstversion.socialmedia.dto.request.CreateUserRequest;
 import com.firstversion.socialmedia.dto.request.LoginRequest;
 import com.firstversion.socialmedia.dto.response.authenticate.AuthenticationResponse;
-import com.firstversion.socialmedia.dto.response.authenticate.RegisterSuccessResponse;
 import com.firstversion.socialmedia.dto.response.user.UserResponse;
 import com.firstversion.socialmedia.exception.AlreadyExistException;
 import com.firstversion.socialmedia.service.AuthService;
@@ -19,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/auth")
-public class AuthController {
+public class AuthenticationController {
     @Autowired
     UserService userService;
     @Autowired

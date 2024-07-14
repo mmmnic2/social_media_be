@@ -10,6 +10,6 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PostLikeId implements Serializable {
-    private User userLike;
-    private Post post;
+    private Long userLike;
+    private Long post;
 }

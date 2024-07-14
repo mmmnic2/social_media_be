@@ -9,9 +9,12 @@ import com.firstversion.socialmedia.service.UserFollowerService;
 import com.firstversion.socialmedia.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -29,12 +32,10 @@ public class UserController {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<?> updateUser(@RequestHeader("Authorization") String jwt,
-                                        @RequestBody CreateUserRequest createUserRequest) {
+    public ResponseEntity<?> updateUser(@RequestBody CreateUserRequest createUserRequest) {
         try {
-            System.out.println(jwt);
-            userService.updateUser(jwt.substring(7), createUserRequest);
-            return ResponseEntity.ok("update user successfully.");
+            UserResponse response = userService.updateUser(createUserRequest);
+            return ResponseEntity.ok(response);
         } catch (NotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (AlreadyExistException e) {
@@ -93,9 +94,25 @@ public class UserController {
         return ResponseEntity.ok(responses);
     }
 
+//    @GetMapping("/profile")
+//    public ResponseEntity<?> getUserFromToken(@RequestHeader("Authorization") String jwt) {
+//        UserResponse response = userService.findUserByJwt(jwt.substring(7));
+//        return ResponseEntity.ok(response);
+//    }
+
     @GetMapping("/profile")
-    public ResponseEntity<?> getUserFromToken(@RequestHeader("Authorization") String jwt) {
-        UserResponse response = userService.findUserByJwt(jwt.substring(7));
+    public ResponseEntity<?> getUserProfile() {
+        UserResponse response = userService.findUserDetails();
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping(value = "/upload-avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> doUploadAvatar(@RequestPart MultipartFile image) throws IOException {
+        String imageUrl = userService.doUploadAvatar(image);
+        if (imageUrl == null) {
+            return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body("Can not upload avatar for user.");
+        } else {
+            return ResponseEntity.ok(imageUrl);
+        }
     }
 }
