@@ -23,6 +23,7 @@ public class WebMvcConfig {
             @Override
             public void addCorsMappings(@NonNull CorsRegistry registry) {
                 registry.addMapping("/**") // Áp dụng cho tất cả các endpoint
+
                         .allowedOrigins("*") // Cho phép từ tên miền này
                         .allowedMethods("HEAD", "OPTIONS", "GET", "POST", "PUT", "PATCH", "DELETE")// Các phương thức được phép
                         .allowedHeaders("*") // Cho phép tất cả các headers

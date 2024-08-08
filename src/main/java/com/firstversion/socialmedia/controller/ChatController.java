@@ -1,6 +1,7 @@
 package com.firstversion.socialmedia.controller;
 
 import com.firstversion.socialmedia.dto.request.CreateChatRequest;
+import com.firstversion.socialmedia.dto.response.chat.ChatResponse;
 import com.firstversion.socialmedia.model.entity.Chat;
 import com.firstversion.socialmedia.model.entity.User;
 import com.firstversion.socialmedia.service.ChatService;
@@ -23,13 +24,13 @@ public class ChatController {
     public ResponseEntity<?> createChat(@RequestBody CreateChatRequest createChatRequest) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User foundUser = (User) authentication.getPrincipal();
-        Chat response = chatService.createChat(foundUser.getId(), createChatRequest);
+        ChatResponse response = chatService.createChat(foundUser.getId(), createChatRequest);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{chatId}")
     public ResponseEntity<?> getChatById(@PathVariable Long chatId) {
-        Chat response = chatService.findChatById(chatId);
+        ChatResponse response = chatService.findChatById(chatId);
         return ResponseEntity.ok(response);
     }
 
@@ -37,7 +38,7 @@ public class ChatController {
     public ResponseEntity<?> findChatByUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User foundUser = (User) authentication.getPrincipal();
-        List<Chat> responses = chatService.findAllChatByUser(foundUser.getId());
+        List<ChatResponse> responses = chatService.findAllChatByUser(foundUser.getId());
         return ResponseEntity.ok(responses);
     }
 }

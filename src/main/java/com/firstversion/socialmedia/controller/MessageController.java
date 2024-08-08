@@ -28,7 +28,7 @@ public class MessageController {
     public ResponseEntity<?> createMessage(@RequestBody CreateMessageRequest request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) authentication.getPrincipal();
-        MessageResponse response = messageService.createMessage(user.getId(), request);
+        MessageResponse response = messageService.createMessage(user, request);
         return ResponseEntity.ok(response);
     }
 

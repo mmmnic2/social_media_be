@@ -32,6 +32,7 @@ public class WebSecurityConfig {
     @Autowired
     LogoutHandler logoutHandler;
     String[] swagger_ui_endpoint = {"/swagger-ui/**", "/v3/api-docs/**", "/api-docs/**"};
+    String[] ws_endpoint = {"/ws/**"};
 
     @Bean
     public AuthTokenFilter authenticationTokenFilter() {
@@ -60,6 +61,7 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(authorize ->
                         authorize.requestMatchers("/auth/**").permitAll()
                                 .requestMatchers(swagger_ui_endpoint).permitAll()
+                                .requestMatchers(ws_endpoint).permitAll()
                                 .anyRequest().authenticated())
                 // nhà cung cấp xác thực bằng cách sử dụng method authenticationProvider()
                 .authenticationProvider(authenticationProvider())

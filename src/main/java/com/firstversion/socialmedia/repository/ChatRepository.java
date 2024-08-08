@@ -20,6 +20,11 @@ public interface ChatRepository extends JpaRepository<Chat, Long> {
     Chat findExistedChat(Long user_id_1, Long user_id_2);
 
     @Query(value = "Select c.* from chat c where " +
+            "c.chat_id in (select chat_id from chat_member cm " +
+//            "where cm.user_id = :user_id " +
+            "group by chat_id having count(distinct user_id) = 1)", nativeQuery = true)
+    Chat findExistedChatThemselves(Long user_id);
+    @Query(value = "Select c.* from chat c where " +
             "c.chat_id in (select chat_id from chat_member cm where cm.user_id = :userId)"
             , nativeQuery = true)
     List<Chat> findByUserId(Long userId);
